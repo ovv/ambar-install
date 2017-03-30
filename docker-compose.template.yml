@@ -1,0 +1,93 @@
+version: "2"
+services:
+  webapi:
+    restart: always
+    image: ${DOCKER_REPO_URL}/ambar-webapi:latest
+    expose:
+      - "8080"
+    ports:
+      - "${API_PORT}:8080"
+    environment:
+      - db=mongodb://db:27017/ambar_data
+      - fe=${FE_PROTOCOL}://${FE_HOST}:${FE_PORT}
+      - api=${API_PROTOCOL}://${API_HOST}:${API_PORT}
+      - es=http://es:9200
+      - redis=webapi-cache
+      - rabbit=amqp://${API_HOST}
+      - mode=prod
+      - pipelineCount=${PIPELINE_COUNT}
+      - crawlerCount=${CRAWLER_COUNT}
+      - dropboxClientId=${DROPBOX_CLIENT_ID}
+      - dropboxRedirectUri=${DROPBOX_REDIRECT_URI}
+      - defaultLangAnalyzer=${DEFAULT_LANG_ANALYZER}
+      - analyticsToken=${ANALYTICS_TOKEN}
+      - auth=${AUTH_TYPE}
+      - ocrPdfMaxPageCount=${OCR_PDF_MAX_PAGE_COUNT}
+      - ocrPdfSymbolsPerPageThreshold=${OCR_PDF_SYMBOLS_PER_PAGE_THRESHOLD}
+    depends_on:
+      - db
+      - rabbit
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  webapi-cache:
+    restart: always
+    image: redis:alpine       
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    depends_on:
+      - webapi   
+    mem_limit: ${WEBAPI_CACHE_SIZE} 
+  frontend:
+    image: ${DOCKER_REPO_URL}/ambar-frontend:latest
+    ports:
+      - "${FE_PORT}:80"
+    restart: always
+    environment:
+      - api=${API_PROTOCOL}://${API_HOST}:${API_PORT}
+  db:
+    restart: always
+    image: ${DOCKER_REPO_URL}/ambar-mongodb:latest
+    environment:
+      - cacheSizeGB=4
+    volumes:
+      - ${DB_PATH}:/data/db
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+  es:
+    image: ${DOCKER_REPO_URL}/ambar-es:latest
+    restart: always
+    expose:
+      - "9200"
+    ports:
+      - "9200:9200"
+    environment:
+      - cluster.name=ambar-es
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - security.manager.enabled=false
+      - "ES_JAVA_OPTS=-Xms${ES_HEAP_SIZE} -Xmx${ES_HEAP_SIZE}"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1  
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: ${ES_CONTAINER_SIZE}
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ${ES_PATH}:/usr/share/elasticsearch/data
+  rabbit:
+    image: ${DOCKER_REPO_URL}/ambar-rabbit:latest
+    hostname: ambar-rabbit
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - ${RABBIT_PATH}:/var/lib/rabbitmq
+

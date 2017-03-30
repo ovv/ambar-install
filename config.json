@@ -1,0 +1,33 @@
+{        
+    "api": {
+        "host": "",
+        "protocol": "http",    
+        "port": "8004", 
+        "analyticsToken": "cda4b0bb11a1f32aed7564b08c455992",
+        "auth": "none",
+        "defaultLangAnalyzer": "ambar_en",
+        "pipelineCount": 1,
+        "crawlerCount": 1,
+        "cacheSize": "1g"
+    },    
+    "fe":{
+        "host": "",
+        "port": "80",
+        "protocol": "http"
+    },
+    "es": {        
+        "heapSize": "1g",
+        "containerSize": "2g"         
+    },              
+    "ocr": {
+        "pdfMaxPageCount": 5000,
+        "pdfSymbolsPerPageThreshold": 100
+    },
+    "dropbox": {
+        "clientId": "",
+        "redirectUri": ""
+    },
+    "dockerRepo": "ambar",
+    "dockerComposeTemplate": "https://static.ambar.cloud/docker-compose.template.yml",
+    "dataPath": "/opt/ambar"  
+}
