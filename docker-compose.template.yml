@@ -50,7 +50,7 @@ services:
     restart: always
     image: ${DOCKER_REPO_URL}/ambar-mongodb:latest
     environment:
-      - cacheSizeGB=4
+      - cacheSizeGB=${DB_CACHE_SIZE_GB}
     volumes:
       - ${DB_PATH}:/data/db
     ports:

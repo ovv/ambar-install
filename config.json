@@ -10,7 +10,10 @@
         "crawlerCount": 1,
         "cacheSize": "1g"
     },    
-    "fe":{
+    "db": {
+        "cacheSizeGb": 2
+    },
+    "fe": {
         "host": "",
         "port": "80",
         "protocol": "http"

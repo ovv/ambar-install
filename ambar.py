@@ -138,6 +138,8 @@ def generateDockerCompose(configuration):
     composeTemplate = composeTemplate.replace('${DROPBOX_CLIENT_ID}', configuration['dropbox']['clientId'])
     composeTemplate = composeTemplate.replace('${DROPBOX_REDIRECT_URI}', configuration['dropbox']['redirectUri'])
 
+    composeTemplate = composeTemplate.replace('${DB_CACHE_SIZE_GB}', configuration['db']['cacheSizeGb'])
+
     with open('{0}/docker-compose.yml'.format(PATH), 'w') as dockerCompose:
         dockerCompose.write(composeTemplate)    
 
