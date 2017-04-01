@@ -1,8 +1,15 @@
 {        
-    "api": {
-        "host": "",
-        "protocol": "http",    
-        "port": "8004", 
+    "api": {        
+        "local":{
+            "host": "",
+            "protocol": "http",    
+            "port": "8004"
+        },
+        "external":{
+            "host": "",
+            "protocol": "http",    
+            "port": "8004"
+        },
         "analyticsToken": "cda4b0bb11a1f32aed7564b08c455992",
         "auth": "none",
         "defaultLangAnalyzer": "ambar_en",
@@ -14,9 +21,16 @@
         "cacheSizeGb": 2
     },
     "fe": {
-        "host": "",
-        "port": "80",
-        "protocol": "http"
+        "local":{
+            "host": "",
+            "protocol": "http",    
+            "port": "80"
+        },
+        "external":{
+            "host": "",
+            "protocol": "http",    
+            "port": "80"
+        }
     },
     "es": {        
         "heapSize": "1g",

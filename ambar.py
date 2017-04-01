@@ -114,13 +114,22 @@ def generateDockerCompose(configuration):
     composeTemplate = composeTemplate.replace('${ES_PATH}', '{0}/es'.format(configuration['dataPath']))
     composeTemplate = composeTemplate.replace('${RABBIT_PATH}', '{0}/rabbit'.format(configuration['dataPath']))
 
-    composeTemplate = composeTemplate.replace('${FE_PORT}', configuration['fe']['port'])
-    composeTemplate = composeTemplate.replace('${FE_HOST}', configuration['fe']['host'])
-    composeTemplate = composeTemplate.replace('${FE_PROTOCOL}', configuration['fe']['protocol'])
+    composeTemplate = composeTemplate.replace('${FE_LOC_PORT}', configuration['fe']['local']['port'])
+    composeTemplate = composeTemplate.replace('${FE_LOC_HOST}', configuration['fe']['local']['host'])
+    composeTemplate = composeTemplate.replace('${FE_LOC_PROTOCOL}', configuration['fe']['local']['protocol'])
 
-    composeTemplate = composeTemplate.replace('${API_PORT}', configuration['api']['port'])
-    composeTemplate = composeTemplate.replace('${API_PROTOCOL}', configuration['api']['protocol'])
-    composeTemplate = composeTemplate.replace('${API_HOST}', configuration['api']['host'])
+    composeTemplate = composeTemplate.replace('${FE_EXT_PORT}', configuration['fe']['external']['port'])
+    composeTemplate = composeTemplate.replace('${FE_EXT_HOST}', configuration['fe']['external']['host'])
+    composeTemplate = composeTemplate.replace('${FE_EXT_PROTOCOL}', configuration['fe']['external']['protocol'])
+
+    composeTemplate = composeTemplate.replace('${API_LOC_PORT}', configuration['api']['local']['port'])
+    composeTemplate = composeTemplate.replace('${API_LOC_PROTOCOL}', configuration['api']['local']['protocol'])
+    composeTemplate = composeTemplate.replace('${API_LOC_HOST}', configuration['api']['local']['host'])
+
+    composeTemplate = composeTemplate.replace('${API_EXT_PORT}', configuration['api']['external']['port'])
+    composeTemplate = composeTemplate.replace('${API_EXT_PROTOCOL}', configuration['api']['external']['protocol'])
+    composeTemplate = composeTemplate.replace('${API_EXT_HOST}', configuration['api']['external']['host'])
+
     composeTemplate = composeTemplate.replace('${PIPELINE_COUNT}', str(configuration['api']['pipelineCount']))
     composeTemplate = composeTemplate.replace('${CRAWLER_COUNT}', str(configuration['api']['crawlerCount']))
     composeTemplate = composeTemplate.replace('${ANALYTICS_TOKEN}', configuration['api'].get('analyticsToken', ''))
@@ -160,8 +169,10 @@ def install(configuration):
     downloadDockerComposeTemplate()
         
     machineAddress = getMachineIpAddress()
-    configuration['api']['host'] = machineAddress
-    configuration['fe']['host'] = machineAddress
+    configuration['api']['local']['host'] = machineAddress
+    configuration['api']['external']['host'] = machineAddress
+    configuration['fe']['local']['host'] = machineAddress
+    configuration['fe']['external']['host'] = machineAddress
     with open('{0}/config.json'.format(PATH), 'w') as configFile:
         json.dump(configuration, configFile, indent=4)
 
@@ -176,7 +187,7 @@ def start(configuration):
     runShellCommandStrict('docker-compose -f {0}/docker-compose.yml -p ambar up -d'.format(PATH))
     print('Waiting for Ambar to start...')
     time.sleep(30)
-    print('Ambar is running on {0}://{1}:{2}'.format(configuration['fe']['protocol'], configuration['fe']['host'], configuration['fe']['port']))
+    print('Ambar is running on {0}://{1}:{2}'.format(configuration['fe']['external']['protocol'], configuration['fe']['external']['host'], configuration['fe']['external']['port']))
 
 def stop(configuration):
     dockerRepo = configuration['dockerRepo']
