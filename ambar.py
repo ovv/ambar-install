@@ -21,7 +21,7 @@ ______           ____     ______  ____
 
                                               """
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 STATIC_FILE_HOST = 'https://static.ambar.cloud/'
 BLOG_HOST = 'https://blog.ambar.cloud/'
 START = 'start'
@@ -136,6 +136,10 @@ def generateDockerCompose(configuration):
     composeTemplate = composeTemplate.replace('${DEFAULT_LANG_ANALYZER}', configuration['api']['defaultLangAnalyzer'])
     composeTemplate = composeTemplate.replace('${AUTH_TYPE}', configuration['api']['auth'])
     composeTemplate = composeTemplate.replace('${WEBAPI_CACHE_SIZE}', configuration['api']['cacheSize'])
+    if 'mode' in configuration['api']:
+        composeTemplate = composeTemplate.replace('${MODE}', configuration['api']['mode'])
+    else:
+        composeTemplate = composeTemplate.replace('${MODE}', 'ce')
 
     composeTemplate = composeTemplate.replace('${ES_HEAP_SIZE}', configuration['es']['heapSize'])
     composeTemplate = composeTemplate.replace('${ES_CONTAINER_SIZE}', configuration['es']['containerSize'])

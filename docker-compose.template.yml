@@ -14,7 +14,7 @@ services:
       - es=http://es:9200
       - redis=webapi-cache
       - rabbit=amqp://${API_LOC_HOST}
-      - mode=prod
+      - mode=${MODE}
       - pipelineCount=${PIPELINE_COUNT}
       - crawlerCount=${CRAWLER_COUNT}
       - dropboxClientId=${DROPBOX_CLIENT_ID}
