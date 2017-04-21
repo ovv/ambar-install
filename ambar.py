@@ -183,7 +183,7 @@ def install(configuration):
     generateDockerCompose(configuration)
     pullImages(configuration)
     setOsConstants()
-    print('Ambar installed successfully! Run `sudo ambar.py start` to start Ambar')
+    print('Ambar installed successfully! Run `sudo ./ambar.py start` to start Ambar')
 
 def start(configuration):    
     setRunTimeOsConstants()    
