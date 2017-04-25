@@ -16,7 +16,8 @@
         "defaultLangAnalyzer": "ambar_en",
         "pipelineCount": 1,
         "crawlerCount": 1,
-        "cacheSize": "1g"
+        "cacheSize": "1g",
+        "showFilePreview": "false"
     },    
     "db": {
         "cacheSizeGb": 2

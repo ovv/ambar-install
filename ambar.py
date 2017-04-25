@@ -140,6 +140,10 @@ def generateDockerCompose(configuration):
         composeTemplate = composeTemplate.replace('${MODE}', configuration['api']['mode'])
     else:
         composeTemplate = composeTemplate.replace('${MODE}', 'ce')
+    if 'showFilePreview' in configuration['api']:
+        composeTemplate = composeTemplate.replace('${SHOW_FILE_PREVIEW}', configuration['api']['showFilePreview'])
+    else:
+        composeTemplate = composeTemplate.replace('${SHOW_FILE_PREVIEW}', 'false')
 
     composeTemplate = composeTemplate.replace('${ES_HEAP_SIZE}', configuration['es']['heapSize'])
     composeTemplate = composeTemplate.replace('${ES_CONTAINER_SIZE}', configuration['es']['containerSize'])

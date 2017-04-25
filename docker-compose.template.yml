@@ -24,6 +24,7 @@ services:
       - auth=${AUTH_TYPE}
       - ocrPdfMaxPageCount=${OCR_PDF_MAX_PAGE_COUNT}
       - ocrPdfSymbolsPerPageThreshold=${OCR_PDF_SYMBOLS_PER_PAGE_THRESHOLD}
+      - showFilePreview=${SHOW_FILE_PREVIEW}
     depends_on:
       - db
       - rabbit
