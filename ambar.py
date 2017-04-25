@@ -29,12 +29,14 @@ STOP = 'stop'
 INSTALL = 'install'
 UPDATE = 'update'
 RESTART = 'restart'
+RESET = 'reset'
+UNINSTALL = 'uninstall'
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 
 parser = argparse.ArgumentParser(description='Ambar Installation Script (https://ambar.cloud)')
 
-parser.add_argument('action', choices=[INSTALL, START, STOP, RESTART, UPDATE])
+parser.add_argument('action', choices=[INSTALL, START, STOP, RESTART, UPDATE, RESET, UNINSTALL])
 parser.add_argument('--version', action='version', version = VERSION)
 parser.add_argument('--useLocalConfig', action='store_true', help = 'use config.json from the script directory')
 parser.add_argument('--configUrl', default = '{0}config.json'.format(STATIC_FILE_HOST), help = 'url of configuration file')
@@ -218,6 +220,34 @@ def restart(configuration):
     stop(configuration)
     start(configuration)
 
+def reset(configuration):
+    dataPath = configuration['dataPath']
+    print('All data from Ambar will be removed ({0}). Are you sure? (y/n)'.format(dataPath))
+    choice = input().lower()
+    
+    if (choice != 'y'):
+        return
+
+    stop(configuration)
+    runShellCommand('rm -rf {0}'.format(dataPath))
+    print('Done. To start Ambar use `sudo ./ambar.py start`')
+
+def uninstall(configuration):
+    dataPath = configuration['dataPath']
+    print('Ambar will be uninstalled and all data will be removed ({0}). Are you sure? (y/n)'.format(dataPath))
+    choice = input().lower()
+    
+    if (choice != 'y'):
+        return
+    
+    stop(configuration)
+    runShellCommand('rm -rf {0}'.format(dataPath))
+    runShellCommand('rm -f ./config.json')
+    runShellCommand('rm -f ./docker-compose.template.yml')
+    runShellCommand('rm -f ./docker-compose.yml')
+    runShellCommand('rm -f ./docker-compose.yml')  
+    print('Thank you for your interest in our product, you can send your feedback to hello@ambar.cloud. To remove the installer run `rm -f ambar.py`.')
+
 print(AMBAR_LOGO)
 checkRequirements()
 
@@ -248,6 +278,16 @@ if (args.action == INSTALL):
 if (args.action == UPDATE):
     configuration = loadConfigFromFile()
     update(configuration)
+    exit(0)
+
+if (args.action == RESET):
+    configuration = loadConfigFromFile()
+    reset(configuration)
+    exit(0)
+
+if (args.action == UNINSTALL):
+    configuration = loadConfigFromFile()
+    uninstall(configuration)
     exit(0)
 
 
