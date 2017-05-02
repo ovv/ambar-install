@@ -8,7 +8,7 @@
         "external":{
             "host": "",
             "protocol": "http",    
-            "port": "8004"
+            "port": "80"
         },
         "analyticsToken": "cda4b0bb11a1f32aed7564b08c455992",
         "auth": "basic",

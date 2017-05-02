@@ -2,18 +2,18 @@ version: "2"
 services:
   webapi:
     restart: always
+    networks:
+      - ambar_network
     image: ${DOCKER_REPO_URL}/ambar-webapi:latest
     expose:
       - "8080"
-    ports:
-      - "${API_LOC_PORT}:8080"
     environment:
       - db=mongodb://db:27017/ambar_data
       - fe=${FE_EXT_PROTOCOL}://${FE_EXT_HOST}:${FE_EXT_PORT}
-      - api=${API_LOC_PROTOCOL}://${API_LOC_HOST}:${API_LOC_PORT}
+      - api=http://webapi:8080
       - es=http://es:9200
       - redis=webapi-cache
-      - rabbit=amqp://${API_LOC_HOST}
+      - rabbit=amqp://rabbit
       - mode=${MODE}
       - pipelineCount=${PIPELINE_COUNT}
       - crawlerCount=${CRAWLER_COUNT}
@@ -32,7 +32,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
   webapi-cache:
     restart: always
-    image: redis:alpine       
+    image: redis:alpine   
+    networks:
+      - ambar_network    
     expose:
       - "6379"
     ports:
@@ -40,26 +42,46 @@ services:
     depends_on:
       - webapi   
     mem_limit: ${WEBAPI_CACHE_SIZE} 
+  proxy:
+    image: ${DOCKER_REPO_URL}/ambar-proxy:latest
+    networks:
+      - ambar_network
+    restart: always
+    environment:
+      - API_EXT_PORT=${API_EXT_PORT}
+      - FE_EXT_PORT=${FE_EXT_PORT}
+    expose:
+      - ${FE_EXT_PORT}
+      - ${API_EXT_PORT}
+    ports:
+      - "${FE_EXT_PORT}:${FE_EXT_PORT}"
+      - "${API_EXT_PORT}:${API_EXT_PORT}"
   frontend:
     image: ${DOCKER_REPO_URL}/ambar-frontend:latest
-    ports:
-      - "${FE_LOC_PORT}:80"
+    networks:
+      - ambar_network
+    expose:
+      - "80"
     restart: always
     environment:
       - api=${API_EXT_PROTOCOL}://${API_EXT_HOST}:${API_EXT_PORT}
   db:
     restart: always
     image: ${DOCKER_REPO_URL}/ambar-mongodb:latest
+    networks:
+      - ambar_network
     environment:
       - cacheSizeGB=${DB_CACHE_SIZE_GB}
     volumes:
       - ${DB_PATH}:/data/db
-    ports:
-      - "27017:27017"
     expose:
       - "27017"
+    ports:
+      - "27017:27017"
   es:
     image: ${DOCKER_REPO_URL}/ambar-es:latest
+    networks:
+      - ambar_network
     restart: always
     expose:
       - "9200"
@@ -85,10 +107,15 @@ services:
       - ${ES_PATH}:/usr/share/elasticsearch/data
   rabbit:
     image: ${DOCKER_REPO_URL}/ambar-rabbit:latest
-    hostname: ambar-rabbit
+    networks:
+      - ambar_network
+    hostname: rabbit
+    expose:
+      - "15672""
+      - "5672""
     ports:
-      - 15672:15672
-      - 5672:5672
+      - "15672:15672"
+      - "5672:5672"
     volumes:
       - ${RABBIT_PATH}:/var/lib/rabbitmq
 
