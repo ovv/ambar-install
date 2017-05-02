@@ -1,9 +1,11 @@
 version: "2"
+networks:
+  internal_network:
 services:
   webapi:
     restart: always
     networks:
-      - ambar_network
+      - internal_network
     image: ${DOCKER_REPO_URL}/ambar-webapi:latest
     expose:
       - "8080"
@@ -37,7 +39,7 @@ services:
     restart: always
     image: redis:alpine   
     networks:
-      - ambar_network    
+      - internal_network    
     expose:
       - "6379"
     ports:
@@ -46,7 +48,7 @@ services:
   proxy:
     image: ${DOCKER_REPO_URL}/ambar-proxy:latest
     networks:
-      - ambar_network
+      - internal_network
     restart: always
     environment:
       - API_EXT_PORT=${API_EXT_PORT}
@@ -60,7 +62,7 @@ services:
   frontend:
     image: ${DOCKER_REPO_URL}/ambar-frontend:latest
     networks:
-      - ambar_network
+      - internal_network
     depends_on:
       - webapi
     expose:
@@ -72,7 +74,7 @@ services:
     restart: always
     image: ${DOCKER_REPO_URL}/ambar-mongodb:latest
     networks:
-      - ambar_network
+      - internal_network
     environment:
       - cacheSizeGB=${DB_CACHE_SIZE_GB}
     volumes:
@@ -84,7 +86,7 @@ services:
   es:
     image: ${DOCKER_REPO_URL}/ambar-es:latest
     networks:
-      - ambar_network
+      - internal_network
     restart: always
     expose:
       - "9200"
@@ -111,11 +113,11 @@ services:
   rabbit:
     image: ${DOCKER_REPO_URL}/ambar-rabbit:latest
     networks:
-      - ambar_network
+      - internal_network
     hostname: rabbit
     expose:
-      - "15672""
-      - "5672""
+      - "15672"
+      - "5672"
     ports:
       - "15672:15672"
       - "5672:5672"
