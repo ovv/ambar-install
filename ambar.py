@@ -116,17 +116,9 @@ def generateDockerCompose(configuration):
     composeTemplate = composeTemplate.replace('${ES_PATH}', '{0}/es'.format(configuration['dataPath']))
     composeTemplate = composeTemplate.replace('${RABBIT_PATH}', '{0}/rabbit'.format(configuration['dataPath']))
 
-    composeTemplate = composeTemplate.replace('${FE_LOC_PORT}', configuration['fe']['local']['port'])
-    composeTemplate = composeTemplate.replace('${FE_LOC_HOST}', configuration['fe']['local']['host'])
-    composeTemplate = composeTemplate.replace('${FE_LOC_PROTOCOL}', configuration['fe']['local']['protocol'])
-
     composeTemplate = composeTemplate.replace('${FE_EXT_PORT}', configuration['fe']['external']['port'])
     composeTemplate = composeTemplate.replace('${FE_EXT_HOST}', configuration['fe']['external']['host'])
     composeTemplate = composeTemplate.replace('${FE_EXT_PROTOCOL}', configuration['fe']['external']['protocol'])
-
-    composeTemplate = composeTemplate.replace('${API_LOC_PORT}', configuration['api']['local']['port'])
-    composeTemplate = composeTemplate.replace('${API_LOC_PROTOCOL}', configuration['api']['local']['protocol'])
-    composeTemplate = composeTemplate.replace('${API_LOC_HOST}', configuration['api']['local']['host'])
 
     composeTemplate = composeTemplate.replace('${API_EXT_PORT}', configuration['api']['external']['port'])
     composeTemplate = composeTemplate.replace('${API_EXT_PROTOCOL}', configuration['api']['external']['protocol'])
@@ -138,6 +130,7 @@ def generateDockerCompose(configuration):
     composeTemplate = composeTemplate.replace('${DEFAULT_LANG_ANALYZER}', configuration['api']['defaultLangAnalyzer'])
     composeTemplate = composeTemplate.replace('${AUTH_TYPE}', configuration['api']['auth'])
     composeTemplate = composeTemplate.replace('${WEBAPI_CACHE_SIZE}', configuration['api']['cacheSize'])
+
     if 'mode' in configuration['api']:
         composeTemplate = composeTemplate.replace('${MODE}', configuration['api']['mode'])
     else:

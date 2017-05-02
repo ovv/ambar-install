@@ -27,6 +27,9 @@ services:
       - showFilePreview=${SHOW_FILE_PREVIEW}
     depends_on:
       - db
+      - es
+      - webapi-cache
+      - proxy
       - rabbit
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -38,9 +41,7 @@ services:
     expose:
       - "6379"
     ports:
-      - "6379:6379"
-    depends_on:
-      - webapi   
+      - "6379:6379" 
     mem_limit: ${WEBAPI_CACHE_SIZE} 
   proxy:
     image: ${DOCKER_REPO_URL}/ambar-proxy:latest
@@ -60,6 +61,8 @@ services:
     image: ${DOCKER_REPO_URL}/ambar-frontend:latest
     networks:
       - ambar_network
+    depends_on:
+      - webapi
     expose:
       - "80"
     restart: always

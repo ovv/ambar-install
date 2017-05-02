@@ -1,10 +1,5 @@
 {        
     "api": {        
-        "local":{
-            "host": "",
-            "protocol": "http",    
-            "port": "8004"
-        },
         "external":{
             "host": "",
             "protocol": "http",    
@@ -23,11 +18,6 @@
         "cacheSizeGb": 2
     },
     "fe": {
-        "local":{
-            "host": "",
-            "protocol": "http",    
-            "port": "80"
-        },
         "external":{
             "host": "",
             "protocol": "http",    
