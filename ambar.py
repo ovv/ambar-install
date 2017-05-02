@@ -176,9 +176,7 @@ def install(configuration):
     downloadDockerComposeTemplate()
         
     machineAddress = getMachineIpAddress()
-    configuration['api']['local']['host'] = machineAddress
     configuration['api']['external']['host'] = machineAddress
-    configuration['fe']['local']['host'] = machineAddress
     configuration['fe']['external']['host'] = machineAddress
     with open('{0}/config.json'.format(PATH), 'w') as configFile:
         json.dump(configuration, configFile, indent=4)
