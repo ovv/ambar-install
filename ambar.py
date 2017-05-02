@@ -116,6 +116,10 @@ def generateDockerCompose(configuration):
     composeTemplate = composeTemplate.replace('${ES_PATH}', '{0}/es'.format(configuration['dataPath']))
     composeTemplate = composeTemplate.replace('${RABBIT_PATH}', '{0}/rabbit'.format(configuration['dataPath']))
 
+    if configuration['fe']['external']['port'].strip() == configuration['api']['external']['port'].strip():
+        composeTemplate = composeTemplate.replace('- "${API_EXT_PORT}:${API_EXT_PORT}"','')
+        composeTemplate = composeTemplate.replace('- ${API_EXT_PORT}','')       
+
     composeTemplate = composeTemplate.replace('${FE_EXT_PORT}', configuration['fe']['external']['port'])
     composeTemplate = composeTemplate.replace('${FE_EXT_HOST}', configuration['fe']['external']['host'])
     composeTemplate = composeTemplate.replace('${FE_EXT_PROTOCOL}', configuration['fe']['external']['protocol'])
