@@ -239,7 +239,6 @@ def uninstall(configuration):
     runShellCommand('rm -rf {0}'.format(dataPath))
     runShellCommand('rm -f ./config.json')
     runShellCommand('rm -f ./docker-compose.template.yml')
-    runShellCommand('rm -f ./docker-compose.yml')
     runShellCommand('rm -f ./docker-compose.yml')  
     print('Thank you for your interest in our product, you can send your feedback to hello@ambar.cloud. To remove the installer run `rm -f ambar.py`.')
 
