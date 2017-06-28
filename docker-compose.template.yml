@@ -10,7 +10,7 @@ services:
     expose:
       - "8080"
     environment:
-      - dockerRepo:${DOCKER_REPO_URL}
+      - dockerRepo=${DOCKER_REPO_URL}
       - db=mongodb://db:27017/ambar_data
       - fe=${FE_EXT_PROTOCOL}://${FE_EXT_HOST}:${FE_EXT_PORT}
       - api=http://webapi:8080
