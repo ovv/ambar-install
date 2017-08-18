@@ -146,7 +146,6 @@ def generateDockerCompose(configuration):
 
     composeTemplate = composeTemplate.replace('${ES_HEAP_SIZE}', configuration['es']['heapSize'])
     composeTemplate = composeTemplate.replace('${ES_CONTAINER_SIZE}', configuration['es']['containerSize'])
-    composeTemplate = composeTemplate.replace('${ES_CONTAINER_SIZE}', configuration['es']['containerSize'])
 
     composeTemplate = composeTemplate.replace('${OCR_PDF_MAX_PAGE_COUNT}', str(configuration['ocr']['pdfMaxPageCount']))
     composeTemplate = composeTemplate.replace('${OCR_PDF_SYMBOLS_PER_PAGE_THRESHOLD}', str(configuration['ocr']['pdfSymbolsPerPageThreshold']))
