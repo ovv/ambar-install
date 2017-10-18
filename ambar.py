@@ -6,6 +6,7 @@ import argparse
 import subprocess
 import os
 import json
+import socket
 import time
 
 AMBAR_LOGO = """ 
@@ -40,8 +41,23 @@ parser.add_argument('action', choices=[INSTALL, START, STOP, RESTART, UPDATE, RE
 parser.add_argument('--version', action='version', version = VERSION)
 parser.add_argument('--useLocalConfig', action='store_true', help = 'use config.json from the script directory')
 parser.add_argument('--configUrl', default = '{0}config.json'.format(STATIC_FILE_HOST), help = 'url of configuration file')
+parser.add_argument('--nowait', dest='nowait', action='store_true', help = 'do now wait for Ambar to start')
 
 args = parser.parse_args()
+
+def isValidIpV4Address(address):
+    try:
+        socket.inet_pton(socket.AF_INET, address)
+    except AttributeError:  # no inet_pton here, sorry
+        try:
+            socket.inet_aton(address)
+        except socket.error:
+            return False
+        return address.count('.') == 3
+    except socket.error:  # not a valid address
+        return False
+
+    return True
 
 def runShellCommandStrict(command):
      subprocess.check_call(command, shell = True)
@@ -175,8 +191,32 @@ def install(configuration):
     downloadDockerComposeTemplate()
         
     machineAddress = getMachineIpAddress()
-    configuration['api']['external']['host'] = machineAddress
-    configuration['fe']['external']['host'] = machineAddress
+
+    print('Assigning {0} ip address to Ambar, Y to confirm or type in another IP address...'.format(machineAddress))
+    userInput = input().lower()
+    if (userInput == 'y'):
+        configuration['api']['external']['host'] = machineAddress
+        configuration['fe']['external']['host'] = machineAddress
+    elif (isValidIpV4Address(userInput)):
+        configuration['api']['external']['host'] = userInput
+        configuration['fe']['external']['host'] = userInput
+    else:
+        print('{0} is not a valid ipv4 address, try again...'.format(userInput))
+        return
+    
+    defaultPort = configuration['fe']['external']['port']
+    print('Assigning {0} port address to Ambar, Y to confirm or type in another port...'.format(defaultPort))
+    userInput = input().lower()
+    if (userInput != 'y'):
+        try:
+            userPort = int(userInput)
+            if (userPort < 0 or userPort > 65535):
+               raise ValueError()
+            configuration['api']['external']['port'] = userInput
+            configuration['fe']['external']['port'] = userInput
+        except:
+             print('{0} is not a valid port, try again...'.format(userInput))
+
     with open('{0}/config.json'.format(PATH), 'w') as configFile:
         json.dump(configuration, configFile, indent=4)
 
@@ -189,9 +229,10 @@ def start(configuration):
     setRunTimeOsConstants()    
     generateDockerCompose(configuration)
     runShellCommandStrict('docker-compose -f {0}/docker-compose.yml -p ambar up -d'.format(PATH))
-    print('Waiting for Ambar to start...')
-    time.sleep(30)
-    print('Ambar is running on {0}://{1}:{2}'.format(configuration['fe']['external']['protocol'], configuration['fe']['external']['host'], configuration['fe']['external']['port']))
+    if not args.nowait:
+        print('Waiting for Ambar to start...')
+        time.sleep(30)
+    print('Ambar is on {0}://{1}:{2}'.format(configuration['fe']['external']['protocol'], configuration['fe']['external']['host'], configuration['fe']['external']['port']))
 
 def stop(configuration):
     dockerRepo = configuration['dockerRepo']
