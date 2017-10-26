@@ -23,7 +23,7 @@ ______           ____     ______  ____
                                               """
 
 VERSION = '0.0.2'
-STATIC_FILE_HOST = 'https://static.ambar.cloud/'
+STATIC_FILE_HOST = 'https://raw.githubusercontent.com/ovv/ambar-install/master/'
 BLOG_HOST = 'https://blog.ambar.cloud/'
 START = 'start'
 STOP = 'stop'
@@ -193,7 +193,8 @@ def loadFromWeb():
     return loadConfigFromFile()
 
 def downloadDockerComposeTemplate():
-    runShellCommandStrict('wget -O {0}/docker-compose.template.yml {1}'.format(PATH, configuration['dockerComposeTemplate']))
+    print('wget -O {0}/docker-compose.template.yml {1}'.format(PATH, configuration['dockerComposeTemplate']))
+    runShellCommandStrict('wget -O {0}/docker-compose.template.yml {1}'.format(PATH, configuration['dockerCom   poseTemplate']))
 
 def install(configuration):                             
     downloadDockerComposeTemplate()
