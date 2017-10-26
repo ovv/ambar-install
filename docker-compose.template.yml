@@ -12,7 +12,7 @@ services:
     environment:
       - dockerRepo=${DOCKER_REPO_URL}
       - db=mongodb://db:27017/ambar_data
-      - fe=${FE_EXT_PROTOCOL}://${FE_EXT_HOST}:${FE_EXT_PORT}
+      - fe=${FE_PUBLIC_URI}
       - api=http://webapi:8080
       - es=http://es:9200
       - redis=webapi-cache
@@ -70,7 +70,7 @@ services:
       - "80"
     restart: always
     environment:
-      - api=${API_EXT_PROTOCOL}://${API_EXT_HOST}:${API_EXT_PORT}
+      - api=${API_PUBLIC_URI}
   db:
     restart: always
     image: ${DOCKER_REPO_URL}/ambar-mongodb:latest

@@ -171,12 +171,20 @@ def generateDockerCompose(configuration):
 
     composeTemplate = composeTemplate.replace('${DB_CACHE_SIZE_GB}', str(configuration['db']['cacheSizeGb']))
 
+    composeTemplate = composeTemplate.replace('${FE_PUBLIC_URI}', configuration['fe']['external']['public_uri'])
+    composeTemplate = composeTemplate.replace('${API_PUBLIC_URI', configuration['api']['external']['public_uri'])
+
     with open('{0}/docker-compose.yml'.format(PATH), 'w') as dockerCompose:
         dockerCompose.write(composeTemplate)    
 
 def loadConfigFromFile():   
     with open('{0}/config.json'.format(PATH), 'r') as configFile:
         config = json.load(configFile)
+    
+    if not 'public_uri' in config['api']['external']:
+        config['api']['external']['public_uri'] = '{}://{}:{}'.format(config['api']['external']['protocol'], config['api']['external']['host'], config['api']['external']['port'])
+    if not 'public_uri' in config['fe']['external']:
+        config['fe']['external']['public_uri'] = '{}://{}:{}'.format(config['fe']['external']['protocol'], config['fe']['external']['host'], config['fe']['external']['port'])
 
     return config
 
