@@ -23,7 +23,7 @@ ______           ____     ______  ____
                                               """
 
 VERSION = '0.0.2'
-STATIC_FILE_HOST = 'https://raw.githubusercontent.com/ovv/ambar-install/master/'
+STATIC_FILE_HOST = 'https://static.ambar.cloud/'
 BLOG_HOST = 'https://blog.ambar.cloud/'
 START = 'start'
 STOP = 'stop'
@@ -172,7 +172,7 @@ def generateDockerCompose(configuration):
     composeTemplate = composeTemplate.replace('${DB_CACHE_SIZE_GB}', str(configuration['db']['cacheSizeGb']))
 
     composeTemplate = composeTemplate.replace('${FE_PUBLIC_URI}', configuration['fe']['external']['public_uri'])
-    composeTemplate = composeTemplate.replace('${API_PUBLIC_URI', configuration['api']['external']['public_uri'])
+    composeTemplate = composeTemplate.replace('${API_PUBLIC_URI}', configuration['api']['external']['public_uri'])
 
     with open('{0}/docker-compose.yml'.format(PATH), 'w') as dockerCompose:
         dockerCompose.write(composeTemplate)    
@@ -193,8 +193,7 @@ def loadFromWeb():
     return loadConfigFromFile()
 
 def downloadDockerComposeTemplate():
-    print('wget -O {0}/docker-compose.template.yml {1}'.format(PATH, configuration['dockerComposeTemplate']))
-    runShellCommandStrict('wget -O {0}/docker-compose.template.yml {1}'.format(PATH, configuration['dockerCom   poseTemplate']))
+    runShellCommandStrict('wget -O {0}/docker-compose.template.yml {1}'.format(PATH, configuration['dockerComposeTemplate']))
 
 def install(configuration):                             
     downloadDockerComposeTemplate()
